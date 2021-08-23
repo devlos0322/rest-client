@@ -1,6 +1,7 @@
-package org.devlos.controller;
+package org.devlos.rest_client.controller;
 
-import org.devlos.service.RestTemplateService;
+import org.devlos.rest_client.dto.UserResponse;
+import org.devlos.rest_client.service.RestTemplateService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +15,8 @@ public class ApiController {
         this.restTemplateService = restTemplateService;
     }
 
-    @GetMapping("")
-    public String getHello(){
+    @GetMapping("/hello")
+    public UserResponse getHello(){
         return restTemplateService.hello();
     }
 }
