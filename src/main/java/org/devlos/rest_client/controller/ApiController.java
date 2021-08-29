@@ -17,6 +17,8 @@ public class ApiController {
 
     @GetMapping("/hello")
     public UserResponse getHello(){
-        return restTemplateService.hello();
+        restTemplateService.post();
+        return new UserResponse();
+//        return restTemplateService.hello();
     }
 }
