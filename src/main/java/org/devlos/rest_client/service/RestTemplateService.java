@@ -1,7 +1,11 @@
 package org.devlos.rest_client.service;
 
+import org.devlos.rest_client.dto.Req;
 import org.devlos.rest_client.dto.UserRequest;
 import org.devlos.rest_client.dto.UserResponse;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -78,7 +82,60 @@ public class RestTemplateService {
         req.setName("steve");
         req.setAge(10);
 
+        //Header 설정
+        RequestEntity<UserRequest> requestEntity = RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization", "abcd")
+                .header("custom-header", "ffffff")
+                .body(req);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<UserResponse> response = restTemplate.exchange(requestEntity, UserResponse.class);
+        return response.getBody();
+    }
+
+    public Req<UserResponse> genericExchange() {
+        // http://localhost:9090/api/server/user/{userID}/name/{userName}
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:9090")
+                .path("/api/server/user/{userId}/name/{userName}")
+                .encode()
+                .build()
+                .expand(100, "steve")
+                .toUri();
+        //expand -> {} 여기 안에 값이 들어가게 됨
+        System.out.println(uri);
+
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName("steve");
+        userRequest.setAge(10);
+
+
+        Req req = new Req<UserRequest>();
+        req.setHeader(
+                new Req.Header()
+        );
+
+        req.setResBody(
+                userRequest
+        );
+
+        //Header 설정
+        RequestEntity<Req<UserRequest>> requestEntity = RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization", "abcd")
+                .header("custom-header", "ffffff")
+                .body(req);
+
         RestTemplate restTemplate = new RestTemplate();
 
+        ResponseEntity<Req<UserResponse>> response
+                = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
+
+        return response.getBody();
     }
+
 }
